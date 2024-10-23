@@ -9,7 +9,7 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-!node_modules/three
+!node_modules/three/**   # Permitir tudo dentro do diretório three
 
 # testing
 /coverage

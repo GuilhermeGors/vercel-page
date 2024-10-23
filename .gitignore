@@ -9,8 +9,10 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-!node_modules/three
-!node_modules/three/**  # Permitir todos os arquivos e subpastas dentro de three
+
+# Permitir o rastreamento da pasta three
+!node_modules/three/
+!node_modules/three/**
 
 # testing
 /coverage
@@ -31,7 +33,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# env files (can opt-in for commiting if needed)
+# env files (can opt-in for committing if needed)
 .env*
 
 # vercel

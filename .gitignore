@@ -9,7 +9,8 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-!node_modules/three/**   # Permitir tudo dentro do diretório three
+!node_modules/three
+!node_modules/three/**  # Permitir todos os arquivos e subpastas dentro de three
 
 # testing
 /coverage

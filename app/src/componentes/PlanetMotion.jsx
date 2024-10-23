@@ -1,5 +1,5 @@
 // app/src/componentes/PlanetMotion.jsx
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import PropTypes from 'prop-types';
 

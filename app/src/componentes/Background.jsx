@@ -21,7 +21,7 @@ class Background {
 
         // Adicionando meteoros
         this.meteors = [];
-        for (let i = 0; i < 50000; i++) {
+        for (let i = 0; i < 5000; i++) {
             const meteor = new Meteor();
             this.meteors.push(meteor);
             this.stars.add(meteor.mesh); // Adiciona cada meteoro ao cenário
@@ -29,7 +29,7 @@ class Background {
 
         // Adicionando naves
         this.spaceships = [];
-        for (let i = 0; i < 10000; i++) {
+        for (let i = 0; i < 5000; i++) {
             const spaceship = new Spaceship();
             this.spaceships.push(spaceship);
             this.stars.add(spaceship.mesh); // Adiciona cada nave ao cenário

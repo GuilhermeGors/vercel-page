@@ -11,9 +11,9 @@ const SolarSystem = () => {
     const sceneRef = useRef();
 
     const planetsData = [
-        { distance: 5, size: 0.5, color: 0xff0000, moonCount: 1, speed: 0.01 },
-        { distance: 7, size: 0.7, color: 0x00ff00, moonCount: 2, speed: 0.015 },
-        { distance: 9, size: 1.0, color: 0x0000ff, moonCount: 1, speed: 0.02 },
+        { distance: 5, size: 0.5, color: 0xff0000, moonCount: 1, speed: 0.03 },
+        { distance: 7, size: 0.7, color: 0x00ff00, moonCount: 2, speed: 0.02 },
+        { distance: 9, size: 1.0, color: 0x0000ff, moonCount: 1, speed: 0.023 },
         { distance: 11, size: 0.6, color: 0xffff00, moonCount: 0, speed: 0.025 },
     ];
 

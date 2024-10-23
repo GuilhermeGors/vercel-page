@@ -1,7 +1,7 @@
 "use client"
 // page.tsx
 import React from 'react';
-import SolarSystem from '/workspaces/vercel-page/app/src/componentes/SolarSystem.jsx'; // Ajuste o caminho conforme necessário
+import SolarSystem from './src/componentes/SolarSystem.jsx'; // Ajuste o caminho conforme necessário
 
 const Page = () => {
     return (

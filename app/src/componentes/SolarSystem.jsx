@@ -1,4 +1,3 @@
-// app/src/componentes/SolarSystem.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import * as THREE from 'three';
 import Planet from './Planet';
@@ -7,8 +6,9 @@ import Background from './Background';
 
 const SolarSystem = () => {
     const [hoveredPlanet, setHoveredPlanet] = useState(null);
-    const [animationPaused, setAnimationPaused] = useState(false);
     const sceneRef = useRef();
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
 
     const planetsData = [
         { distance: 5, size: 0.5, color: 0xff0000, moonCount: 1, speed: 0.03 },
@@ -18,7 +18,6 @@ const SolarSystem = () => {
     ];
 
     useEffect(() => {
-        // Criando a cena
         const scene = new THREE.Scene();
         sceneRef.current = scene;
 
@@ -27,7 +26,7 @@ const SolarSystem = () => {
         camera.lookAt(0, 0, 0);
 
         const light = new THREE.PointLight(0xffffff, 1, 100);
-        light.position.set(0, 0, 0); // Posicione onde achar melhor
+        light.position.set(0, 0, 0);
         scene.add(light);
 
         const renderer = new THREE.WebGLRenderer();
@@ -38,11 +37,6 @@ const SolarSystem = () => {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(5, 10, 7.5).normalize();
-        scene.add(directionalLight);
-
-        // Criando e adicionando o fundo
         const background = new Background();
         background.addToScene(scene);
 
@@ -57,27 +51,70 @@ const SolarSystem = () => {
             return planet;
         });
 
-        const animate = () => {
-            background.update(); // Atualiza meteoros e naves
+        let INTERSECTED = null; // Variável para rastrear o planeta atualmente intersecado
 
-            if (!animationPaused) {
-                sun.rotation.y += 0.01;
-                planets.forEach(planet => planet.update());
+        const animate = () => {
+            background.update();
+            sun.rotation.y += 0.01;
+
+            planets.forEach(planet => {
+                if (!planet.isPaused) { // Verifica se o planeta não está pausado
+                    planet.update(); // Atualiza o planeta
+                }
+            });
+
+            // Configurar raycaster
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(planets.map(p => p.mesh));
+            
+            if (intersects.length > 0) {
+                const index = planets.findIndex(p => p.mesh === intersects[0].object);
+                if (index !== -1) { // Verifica se o índice é válido
+                    if (INTERSECTED !== index) {
+                        // Restaurar a cor original do planeta anterior (se houver)
+                        if (INTERSECTED !== null && INTERSECTED < planets.length) { // Verifica se INTERSECTED é válido
+                            planets[INTERSECTED].mesh.material.color.setHex(planets[INTERSECTED].mesh.material.currentHex);
+                            planets[INTERSECTED].isPaused = false; // Retorna o movimento do planeta
+                            planets[INTERSECTED].setHighlight(false); // Ocultar a coroa
+                        }
+                        // Atualizar o planeta intersecado
+                        INTERSECTED = index;
+                        planets[INTERSECTED].mesh.material.currentHex = planets[INTERSECTED].mesh.material.color.getHex(); // Armazenar cor original
+                        planets[INTERSECTED].mesh.material.color.setHex(0xffff00); // Definir nova cor
+                        planets[INTERSECTED].isPaused = true; // Pausa o movimento do planeta
+                        planets[INTERSECTED].setHighlight(true); // Mostrar a coroa
+                    }
+                }
+            } else { // Se não houver intersecções
+                if (INTERSECTED !== null && INTERSECTED < planets.length) { // Verifica se INTERSECTED é válido
+                    planets[INTERSECTED].mesh.material.color.setHex(planets[INTERSECTED].mesh.material.currentHex);
+                    planets[INTERSECTED].isPaused = false; // Retorna o movimento do planeta
+                    planets[INTERSECTED].setHighlight(false); // Ocultar a coroa
+                    INTERSECTED = null; // Remover referência
+                }
             }
-    
+
             renderer.render(scene, camera);
             requestAnimationFrame(animate);
         };
 
         animate();
 
+        // Listener de mouse
+        const onMouseMove = (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+        };
+
+        window.addEventListener('mousemove', onMouseMove);
+
         return () => {
-            // Limpar a cena ao desmontar o componente
+            window.removeEventListener('mousemove', onMouseMove);
             if (renderer.domElement.parentNode) {
                 document.body.removeChild(renderer.domElement);
             }
         };
-    }, [animationPaused]);
+    }, []);
 
     return (
         <>
@@ -86,14 +123,6 @@ const SolarSystem = () => {
                     key={index}
                     data={data}
                     scene={sceneRef.current}
-                    onMouseEnter={() => {
-                        setHoveredPlanet(index);
-                        setAnimationPaused(true);
-                    }}
-                    onMouseLeave={() => {
-                        setHoveredPlanet(null);
-                        setAnimationPaused(false);
-                    }}
                     isHovered={hoveredPlanet === index}
                 />
             ))}

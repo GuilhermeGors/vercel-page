@@ -1,4 +1,3 @@
-// src/components/Planet.jsx
 import * as THREE from 'three';
 
 class Planet {
@@ -12,6 +11,20 @@ class Planet {
         const material = new THREE.MeshStandardMaterial({ color });
         this.mesh = new THREE.Mesh(geometry, material);
         this.mesh.position.set(distance, 0, 0);
+
+        // Criar a coroa de destaque
+        this.highlightGeometry = new THREE.RingGeometry(size * 1.2, size * 1.5, 32);
+        const highlightMaterial = new THREE.MeshStandardMaterial({
+            color: 0xffff00,
+            opacity: 0.5,
+            transparent: true,
+            emissive: 0xffff00,
+            side: THREE.DoubleSide
+        });
+        this.highlight = new THREE.Mesh(this.highlightGeometry, highlightMaterial);
+        this.highlight.rotation.x = Math.PI / 2; // Girar para ficar em posição horizontal
+        this.highlight.visible = false; // Começar invisível
+        this.mesh.add(this.highlight); // Adicionar a coroa ao planeta
 
         // Criar as luas
         this.moons = [];
@@ -42,6 +55,11 @@ class Planet {
                 moonData.distance * Math.sin(moonData.angle)
             );
         });
+    }
+
+    // Método para mostrar/ocultar a coroa
+    setHighlight(visible) {
+        this.highlight.visible = visible;
     }
 }
 
